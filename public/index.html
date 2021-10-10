@@ -105,12 +105,18 @@
 			|| app.getNode(collB).y>app.getNode(collA).y+app.getNode(collA).height
 			|| app.getNode(collA).y>app.getNode(collB).y+app.getNode(collB).height);
 		}
-
+		function clamp(curr, min, max){
+			return Math.min(Math.max(curr, min), max);
+		}
 		app.onUpdate = function(time){
 			console.log(pauseBool);
 			time *= pauseBool?0:1;
-			this.getNode('black-box').y+=this.getNode('black-box').direction*time;
-			this.getNode('red-box').y+=this.getNode('red-box').direction*time;
+			this.getNode('black-box').y = clamp(this.getNode('black-box').y+this.getNode('black-box').direction*time,
+												this.getNode('black-box').y/2,
+												app.height-this.getNode('black-box').height);
+			this.getNode('red-box').y = clamp(this.getNode('red-box').y+this.getNode('red-box').direction*time,
+												this.getNode('red-box').y/2,
+												app.height-this.getNode('red-box').height);
 
 			var ballSpeed = 0.3;
 			this.getNode('ball').x+=this.getNode('ball').direction*time*ballSpeed;
@@ -122,12 +128,12 @@
 			if(this.getNode('ball').x+this.getNode('ball').width<0){
 				console.log("player 1: "+(player1score) + " player 2: "+(++player2score));
 				this.getNode('ball').x = app.width/2;
-				this.getNode('ball').y = app.height/2-10;
+				this.getNode('ball').y = app.height/2-this.getNode('ball').height/2;
 			}
 			else if(this.getNode('ball').x>this.width){
 				console.log("player 1: "+(++player1score) + " player 2: "+(player2score));
 				this.getNode('ball').x = app.width/2;
-				this.getNode('ball').y = app.height/2-10;
+				this.getNode('ball').y = app.height/2-this.getNode('ball').height/2;
 			}
 		};
 	</script>
