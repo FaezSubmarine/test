@@ -26,6 +26,7 @@
 				height : 100,
 				color  : 'red',
 				direction : 0
+
 			});
 
 			this.nodes.push({
@@ -36,18 +37,29 @@
 				height : 150,
 				color  : 'black'
 			});
+			document.addEventListener('keydown',(e)=>{
+				switch(e.key){
+					case 'w':
+						this.getNode('red-box').y--;
+						//console.log(this.getNode('red-box').y);
+						break;
+					case 's':
+						this.getNode('red-box').y++;
+						//console.log(this.getNode('red-box').y);
+						break;
+					case 'ArrowUp':
+						console.log("goes up");
+						this.getNode('black-box').y--;
+						break;
+					case 'ArrowDown':
+						console.log("goes down");
+						this.getNode('black-box').y++;
+						break;
+				}
+			});
 		};
 
 		app.onUpdate = function(time){
-			this.getNode('black-box').y++;
-
-			if(Math.cos(this.timestamp / 100) > 0){
-				this.getNode('red-box').direction = -1;
-			}else{
-				this.getNode('red-box').direction = 1;
-			}
-
-			this.getNode('red-box').x+=this.getNode('red-box').direction;
 		};
 	</script>
 </body>
