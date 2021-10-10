@@ -17,6 +17,8 @@
 		app.width = window.innerWidth;
 		app.height = window.innerHeight;
 		var pauseBool = false;
+		var player1score = 0;
+		var player2score = 0;
 		//Sample functions, remove these functions and design ping-pong game with onInit and onUpdate.
 		function redBoxInput(e){
 			if(e.key === 'w'){
@@ -105,6 +107,17 @@
 			
 			if(collision('red-box','ball') ||collision('black-box','ball')){
 				this.getNode('ball').direction*=-1;
+			}
+
+			if(this.getNode('ball').x+this.getNode('ball').width<0){
+				console.log("player 1: "+(player1score) + " player 2: "+(++player2score));
+				this.getNode('ball').x = app.width/2;
+				this.getNode('ball').y = app.height/2-10;
+			}
+			else if(this.getNode('ball').x>this.width){
+				console.log("player 1: "+(++player1score) + " player 2: "+(player2score));
+				this.getNode('ball').x = app.width/2;
+				this.getNode('ball').y = app.height/2-10;
 			}
 		};
 	</script>
