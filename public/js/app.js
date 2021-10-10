@@ -66,6 +66,17 @@ var app = {
 
 		return { x : null, y : null, width : null, height : null };
 	},
+	getRenderText : function(id){
+		for(var index in this.renderTexts){
+			var renderText = this.renderTexts[index];
+
+			if(renderText.id == id){
+				return renderText;
+			}
+		}
+
+		return { x : null, y : null, width : null, height : null };
+	},
 
 	//events
 	onInit   : function(){},

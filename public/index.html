@@ -79,11 +79,11 @@
 			});
 
 			this.renderTexts.push({
-				id: 'player 1',
+				id: 'player score',
 				x: 50,
 				y:50,
 				font: '48px impact',
-				textString: 'hello world',
+				textString: 'player 1: 0 player 2: 0',
 				color: 'black'
 			});
 			window.addEventListener('keydown',redBoxInput,false);
@@ -126,12 +126,12 @@
 			}
 
 			if(this.getNode('ball').x+this.getNode('ball').width<0){
-				console.log("player 1: "+(player1score) + " player 2: "+(++player2score));
+				this.getRenderText('player score').textString = ("player 1: "+(player1score) + " player 2: "+(++player2score));
 				this.getNode('ball').x = app.width/2;
 				this.getNode('ball').y = app.height/2-this.getNode('ball').height/2;
 			}
 			else if(this.getNode('ball').x>this.width){
-				console.log("player 1: "+(++player1score) + " player 2: "+(player2score));
+				this.getRenderText('player score').textString =("player 1: "+(++player1score) + " player 2: "+(player2score));
 				this.getNode('ball').x = app.width/2;
 				this.getNode('ball').y = app.height/2-this.getNode('ball').height/2;
 			}
