@@ -16,6 +16,7 @@
 	<script type="text/javascript">
 		app.width = window.innerWidth;
 		app.height = window.innerHeight;
+		var pauseBool = false;
 		//Sample functions, remove these functions and design ping-pong game with onInit and onUpdate.
 		function redBoxInput(e){
 			if(e.key === 'w'){
@@ -79,6 +80,12 @@
 
 			window.addEventListener('keydown',blackBoxInput,false);
 			window.addEventListener('keyup',noBlackBoxInput,false);
+
+			window.addEventListener('keydown',(e)=>{
+				if(e.key === ' '){
+					pauseBool = !pauseBool;
+				}
+			})
 		};
 
 		function collision(collA,collB){
@@ -88,6 +95,8 @@
 			|| app.getNode(collA).y>app.getNode(collB).y+app.getNode(collB).height);
 		}
 		app.onUpdate = function(time){
+			console.log(pauseBool);
+			time *= pauseBool?0:1;
 			this.getNode('black-box').y+=this.getNode('black-box').direction*time;
 			this.getNode('red-box').y+=this.getNode('red-box').direction*time;
 
@@ -95,7 +104,6 @@
 			this.getNode('ball').x+=this.getNode('ball').direction*time*ballSpeed;
 			
 			if(collision('red-box','ball') ||collision('black-box','ball')){
-				console.log("collided");
 				this.getNode('ball').direction*=-1;
 			}
 		};
