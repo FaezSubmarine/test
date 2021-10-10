@@ -46,9 +46,9 @@
 		app.onInit = function(){
 			this.nodes.push({
 				id : 'red-box',
-				x  : 100,
-				y  : 0,
-				width  : 100,
+				x  : 50,
+				y  : app.height/2,
+				width  : 50,
 				height : 100,
 				color  : 'red',
 				direction : 0
@@ -57,11 +57,12 @@
 
 			this.nodes.push({
 				id : 'black-box',
-				x  : 50,
-				y  : 0,
-				width  : 150,
-				height : 150,
-				color  : 'black'
+				x  : app.width-50,
+				y  : app.height/2,
+				width  : 50,
+				height : 100,
+				color  : 'black',
+				direction : 0
 			});
 			document.addEventListener('keydown',(e)=>{
 				switch(e.key){
