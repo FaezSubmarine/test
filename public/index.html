@@ -17,6 +17,32 @@
 		app.width = window.innerWidth;
 		app.height = window.innerHeight;
 		//Sample functions, remove these functions and design ping-pong game with onInit and onUpdate.
+		function redBoxInput(e){
+			if(e.key === 'w'){
+					app.getNode('red-box').direction = -1;
+				}
+				if(e.key === 's'){
+					app.getNode('red-box').direction = 1;
+				}
+		}
+		function noRedBoxInput(e){
+			if(e.key === 'w' || e.key === 's'){
+					app.getNode('red-box').direction = 0;
+				}
+		}
+		function blackBoxInput(e){
+			if(e.key === 'ArrowUp'){
+					app.getNode('black-box').direction = -1;
+				}
+				if(e.key === 'ArrowDown'){
+					app.getNode('black-box').direction = 1;
+				}
+		}
+		function noBlackBoxInput(e){
+			if(e.key === 'ArrowUp' || e.key === 'ArrowDown'){
+					app.getNode('black-box').direction = 0;
+				}
+		}
 		app.onInit = function(){
 			this.nodes.push({
 				id : 'red-box',
@@ -57,9 +83,16 @@
 						break;
 				}
 			});
+			window.addEventListener('keydown',redBoxInput,false);
+			window.addEventListener('keyup',noRedBoxInput,false);
+
+			window.addEventListener('keydown',blackBoxInput,false);
+			window.addEventListener('keyup',noBlackBoxInput,false);
 		};
 
 		app.onUpdate = function(time){
+			app.getNode('black-box').y+=app.getNode('black-box').direction;
+			app.getNode('red-box').y+=app.getNode('red-box').direction;
 		};
 	</script>
 </body>
