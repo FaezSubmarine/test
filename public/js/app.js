@@ -10,6 +10,9 @@ var app = {
 	//nodes
 	nodes   : [],
 
+	//texts
+	renderTexts: [],
+
 	//timing
 	timestamp  : 0,
 	now        : 0,
@@ -41,6 +44,12 @@ var app = {
 
 			this.context.fillStyle = node.color;
 			this.context.fillRect(node.x, node.y, node.width, node.height);
+		}
+		for(var index in this.renderTexts){
+			var renderText = this.renderTexts[index];
+			this.context.font = renderText.font;
+			this.context.fillStyle = renderText.color;
+			this.context.fillText(renderText.textString,renderText.x,renderText.y);
 		}
 
 		this.lastUpdate = Date.now();

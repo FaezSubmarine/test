@@ -77,6 +77,15 @@
 				direction : -1
 
 			});
+
+			this.renderTexts.push({
+				id: 'player 1',
+				x: 50,
+				y:50,
+				font: '48px impact',
+				textString: 'hello world',
+				color: 'black'
+			});
 			window.addEventListener('keydown',redBoxInput,false);
 			window.addEventListener('keyup',noRedBoxInput,false);
 
@@ -96,6 +105,7 @@
 			|| app.getNode(collB).y>app.getNode(collA).y+app.getNode(collA).height
 			|| app.getNode(collA).y>app.getNode(collB).y+app.getNode(collB).height);
 		}
+
 		app.onUpdate = function(time){
 			console.log(pauseBool);
 			time *= pauseBool?0:1;
