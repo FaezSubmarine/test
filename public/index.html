@@ -59,11 +59,11 @@
 			app.canvas.height = window.innerHeight;
 
 			var body = document.getElementById('body');
-			body.width = '100%';
-			body.height = '100%';
-			body.margin = '0px';
-			body.overflow = 'hidden';
-			body.diplay = 'block';
+			document.body.clientWidth = '100%';
+			document.body.height = '100%';
+			document.body.margin = '0px';
+			document.body.style.overflowX = document.body.style.overflowY = 'hidden';
+			document.body.diplay = 'block';
 			this.nodes.push({
 				id : 'red-box',
 				width  : 50,
