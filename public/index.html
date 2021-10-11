@@ -46,6 +46,21 @@
 					app.getNode('black-box').direction = 0;
 				}
 		}
+		function resetNodes(){
+			for (var index in app.nodes) {
+				var node = app.nodes[index];
+				if (node.id == 'ball') {
+					app.getNode(node.id).x = app.width/2 - app.getNode(node.id).width/2;
+
+					app.getNode(node.id).direction*=-1;
+				}
+				else {
+					app.getNode(node.id).direction = 0;
+				}
+				app.getNode(node.id).y = app.height / 2 - app.getNode(node.id).height / 2;
+			}
+
+		}
 		app.onInit = function(){
 			this.nodes.push({
 				id : 'red-box',
@@ -77,7 +92,7 @@
 				direction : -1
 
 			});
-
+			resetNodes();
 			this.renderTexts.push({
 				id: 'player score',
 				x: 50,
@@ -127,13 +142,11 @@
 
 			if(this.getNode('ball').x+this.getNode('ball').width<0){
 				this.getRenderText('player score').textString = ("player 1: "+(player1score) + " player 2: "+(++player2score));
-				this.getNode('ball').x = app.width/2;
-				this.getNode('ball').y = app.height/2-this.getNode('ball').height/2;
+				resetNodes();
 			}
 			else if(this.getNode('ball').x>this.width){
 				this.getRenderText('player score').textString =("player 1: "+(++player1score) + " player 2: "+(player2score));
-				this.getNode('ball').x = app.width/2;
-				this.getNode('ball').y = app.height/2-this.getNode('ball').height/2;
+				resetNodes();
 			}
 		};
 	</script>
