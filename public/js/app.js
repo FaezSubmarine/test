@@ -62,8 +62,16 @@ var app = {
 		for(var index in this.nodes){
 			var node = this.nodes[index];
 
-			this.context.fillStyle = node.color;
-			this.context.fillRect(node.x, node.y, node.width, node.height);
+			if (node.id == 'ball') {
+				this.context.beginPath();
+				this.context.fillStyle = node.color;
+				this.context.arc(node.x+node.width/2,node.y+node.height/2,node.width/2,0,Math.PI*2,false);
+				this.context.fill();
+			}
+			else {
+				this.context.fillStyle = node.color;
+				this.context.fillRect(node.x, node.y, node.width, node.height);
+			}
 		}
 		for(var index in this.renderTexts){
 			var renderText = this.renderTexts[index];
