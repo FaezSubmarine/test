@@ -17,6 +17,7 @@ var app = {
 	timestamp  : 0,
 	now        : 0,
 	lastUpdate : 0,
+	pauseBool  : true,
 
 	init : function(){
 		this.canvas  = document.getElementById('canvas');
@@ -36,6 +37,8 @@ var app = {
 	},
 	update : function(){
 	    var dt = Date.now() - this.lastUpdate;
+
+		if(this.pauseBool)dt = 0;
 
 		this.onUpdate(dt);
 
@@ -80,7 +83,11 @@ var app = {
 
 	//events
 	onInit   : function(){},
-	onUpdate : function(){}
+	onUpdate : function(){},
+	reset    : function(){},
+	pause    : function(){
+		this.pauseBool = !this.pauseBool;
+	},
 };
 
 window.onload = function(){

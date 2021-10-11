@@ -19,7 +19,7 @@
 		var pauseBool = false;
 		var player1score = 0;
 		var player2score = 0;
-		//Sample functions, remove these functions and design ping-pong game with onInit and onUpdate.
+
 		function redBoxInput(e){
 			if(e.key === 'w'){
 					app.getNode('red-box').direction = -1;
@@ -46,7 +46,7 @@
 					app.getNode('black-box').direction = 0;
 				}
 		}
-		function resetNodes(){
+		app.reset = function(){
 			for (var index in app.nodes) {
 				var node = app.nodes[index];
 				if (node.id == 'ball') {
@@ -87,7 +87,7 @@
 				direction : -1
 
 			});
-			resetNodes();
+			app.reset();
 			this.renderTexts.push({
 				id: 'player score',
 				x: 50,
@@ -104,7 +104,7 @@
 
 			window.addEventListener('keydown',(e)=>{
 				if(e.key === ' '){
-					pauseBool = !pauseBool;
+					app.pause();
 				}
 			})
 		};
@@ -121,10 +121,11 @@
 		app.onUpdate = function(time){
 			time *= pauseBool?0:1;
 			this.getNode('black-box').y = clamp(this.getNode('black-box').y+this.getNode('black-box').direction*time,
-												this.getNode('black-box').y/2,
+												0,
 												app.height-this.getNode('black-box').height);
+
 			this.getNode('red-box').y = clamp(this.getNode('red-box').y+this.getNode('red-box').direction*time,
-												this.getNode('red-box').y/2,
+												0,
 												app.height-this.getNode('red-box').height);
 
 			var ballSpeed = 0.3;
@@ -136,11 +137,11 @@
 
 			if(this.getNode('ball').x+this.getNode('ball').width<0){
 				this.getRenderText('player score').textString = ("player 1: "+(player1score) + " player 2: "+(++player2score));
-				resetNodes();
+				app.reset();
 			}
 			else if(this.getNode('ball').x>this.width){
 				this.getRenderText('player score').textString =("player 1: "+(++player1score) + " player 2: "+(player2score));
-				resetNodes();
+				app.reset();
 			}
 		};
 	</script>
