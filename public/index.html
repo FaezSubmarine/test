@@ -34,12 +34,12 @@
 				}
 		}
 		function blackBoxInput(e){
-			if(e.key === 'ArrowUp'){
-					app.getNode('black-box').direction = -1;
-				}
-				if(e.key === 'ArrowDown'){
-					app.getNode('black-box').direction = 1;
-				}
+			if (e.key === 'ArrowUp') {
+				app.getNode('black-box').direction = -1;
+			}
+			if (e.key === 'ArrowDown') {
+				app.getNode('black-box').direction = 1;
+			}
 		}
 		function noBlackBoxInput(e){
 			if(e.key === 'ArrowUp' || e.key === 'ArrowDown'){
@@ -64,28 +64,23 @@
 		app.onInit = function(){
 			this.nodes.push({
 				id : 'red-box',
-				x  : 50,
-				y  : app.height/2-50,
 				width  : 50,
 				height : 100,
+				x  : 0,
 				color  : 'red',
 				direction : 0
-
 			});
 
 			this.nodes.push({
 				id : 'black-box',
-				x  : app.width-50,
-				y  : app.height/2-50,
 				width  : 50,
 				height : 100,
 				color  : 'black',
 				direction : 0
 			});
+			this.getNode('black-box').x = this.width-this.getNode('black-box').width;
 			this.nodes.push({
 				id : 'ball',
-				x  : app.width/2,
-				y  : app.height/2-10,
 				width  : 20,
 				height : 20,
 				color  : 'green',
@@ -124,7 +119,6 @@
 			return Math.min(Math.max(curr, min), max);
 		}
 		app.onUpdate = function(time){
-			console.log(pauseBool);
 			time *= pauseBool?0:1;
 			this.getNode('black-box').y = clamp(this.getNode('black-box').y+this.getNode('black-box').direction*time,
 												this.getNode('black-box').y/2,
