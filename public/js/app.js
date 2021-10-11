@@ -19,9 +19,26 @@ var app = {
 	lastUpdate : 0,
 	pauseBool  : true,
 
+	resizeChange : function(){
+		var XRatio = window.innerWidth/this.width;
+		var YRatio = window.innerHeight/this.height;
+		this.width = window.innerWidth;
+		this.height = window.innerHeight;
+		this.canvas.width = window.innerWidth;
+		this.canvas.height = window.innerHeight;
+
+		for(var index in this.nodes){
+			var node = this.nodes[index];
+			node.x *= XRatio;
+			node.width*=XRatio;
+			node.y *= YRatio;
+			node.height*=YRatio;
+		}
+	},
 	init : function(){
 		this.canvas  = document.getElementById('canvas');
 		this.context = this.canvas.getContext('2d');
+
 
 		this.render();
 		this.onInit();
@@ -89,7 +106,9 @@ var app = {
 		this.pauseBool = !this.pauseBool;
 	},
 };
-
+window.onresize = function(){
+	app.resizeChange();
+}
 window.onload = function(){
 	app.init();
 };
