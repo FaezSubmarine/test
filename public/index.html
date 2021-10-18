@@ -12,31 +12,21 @@
 		app.height = window.innerHeight;
 		var player1score = 0;
 		var player2score = 0;
-		function redBoxInput(e){
-			if(e.key === 'w'){
-					app.getNode('red-box').direction = -1;
+		function addEventListenersForObjects(objSubject, negativeKey, positiveKey) {
+			window.addEventListener('keydown', (e) => {
+				if (e.key === negativeKey) {
+					app.getNode(objSubject).direction = -1;
 				}
-				if(e.key === 's'){
-					app.getNode('red-box').direction = 1;
+				if (e.key === positiveKey) {
+					app.getNode(objSubject).direction = 1;
 				}
-		}
-		function noRedBoxInput(e){
-			if(e.key === 'w' || e.key === 's'){
-					app.getNode('red-box').direction = 0;
+			}, false);
+
+			window.addEventListener('keyup', (e) => {
+				if (e.key === negativeKey || e.key === positiveKey) {
+					app.getNode(objSubject).direction = 0;
 				}
-		}
-		function blackBoxInput(e){
-			if (e.key === 'ArrowUp') {
-				app.getNode('black-box').direction = -1;
-			}
-			if (e.key === 'ArrowDown') {
-				app.getNode('black-box').direction = 1;
-			}
-		}
-		function noBlackBoxInput(e){
-			if(e.key === 'ArrowUp' || e.key === 'ArrowDown'){
-					app.getNode('black-box').direction = 0;
-				}
+			}, false);
 		}
 		app.reset = function(){
 			for (var index in app.nodes) {
@@ -53,18 +43,19 @@
 			}
 
 		}
-		app.onInit = function(){
-
+		function browserWindowSetup(){
 			app.canvas.width = window.innerWidth;
 			app.canvas.height = window.innerHeight;
-
 			var body = document.getElementById('body');
 			document.body.clientWidth = '100%';
 			document.body.height = '100%';
 			document.body.margin = '0px';
 			document.body.style.overflowX = document.body.style.overflowY = 'hidden';
 			document.body.diplay = 'block';
-			this.nodes.push({
+		}
+
+		function initObjects(){
+			app.nodes.push({
 				id : 'red-box',
 				width  : 50,
 				height : 100,
@@ -72,16 +63,15 @@
 				color  : 'red',
 				direction : 0
 			});
-
-			this.nodes.push({
+			app.nodes.push({
 				id : 'black-box',
 				width  : 50,
 				height : 100,
 				color  : 'black',
 				direction : 0
 			});
-			this.getNode('black-box').x = this.width-this.getNode('black-box').width;
-			this.nodes.push({
+			app.getNode('black-box').x = app.width-app.getNode('black-box').width;
+			app.nodes.push({
 				id : 'ball',
 				width  : 20,
 				height : 20,
@@ -89,8 +79,7 @@
 				direction : -1
 
 			});
-			app.reset();
-			this.renderTexts.push({
+			app.renderTexts.push({
 				id: 'player score',
 				x: 50,
 				y:50,
@@ -98,12 +87,15 @@
 				textString: 'player 1: 0 player 2: 0',
 				color: 'black'
 			});
-			window.addEventListener('keydown',redBoxInput,false);
-			window.addEventListener('keyup',noRedBoxInput,false);
+		}
+		app.onInit = function(){
+			browserWindowSetup();
+			initObjects();
 
-			window.addEventListener('keydown',blackBoxInput,false);
-			window.addEventListener('keyup',noBlackBoxInput,false);
+			app.reset();
 
+			addEventListenersForObjects('red-box','w','s');
+			addEventListenersForObjects('black-box','ArrowUp','ArrowDown');
 			window.addEventListener('keydown',(e)=>{
 				if(e.key === ' '){
 					app.pause();
