@@ -19,16 +19,16 @@
 		function addEventListenersForObjects(objSubject, negativeKey, positiveKey) {
 			window.addEventListener('keydown', (e) => {
 				if (e.key === negativeKey) {
-					app.getNode(objSubject).direction = -1;
+					app.getNode(objSubject).directionY = -1;
 				}
 				if (e.key === positiveKey) {
-					app.getNode(objSubject).direction = 1;
+					app.getNode(objSubject).directionY = 1;
 				}
 			}, false);
 
 			window.addEventListener('keyup', (e) => {
 				if (e.key === negativeKey || e.key === positiveKey) {
-					app.getNode(objSubject).direction = 0;
+					app.getNode(objSubject).directionY = 0;
 				}
 			}, false);
 		}
@@ -71,7 +71,8 @@
 				height : PLAYER_HEIGHT,
 				x  : 0,
 				color  : 'red',
-				direction : 0
+				directionX: 0,
+				directionY:0
 			});
 			app.nodes.push({
 				id : BLACK_BOX,
@@ -79,15 +80,17 @@
 				height : PLAYER_HEIGHT,
 				x: app.width-PLAYER_WIDTH,
 				color  : 'black',
-				direction : 0
+				directionX: 0,
+				directionY:0
 			});
+
 			app.nodes.push({
 				id : BALL,
 				width  : BALL_DIAMETER,
 				height : BALL_DIAMETER,
 				color  : 'green',
-				direction : -1
-
+				directionX: -1,
+				directionY:0
 			});
 			app.renderTexts.push({
 				id: PLAYER_SCORE,
@@ -123,19 +126,19 @@
 			return Math.min(Math.max(curr, min), max);
 		}
 		app.onUpdate = function(time){
-			this.getNode(BLACK_BOX).y = clamp(this.getNode(BLACK_BOX).y+this.getNode(BLACK_BOX).direction*time,
+			this.getNode(BLACK_BOX).y = clamp(this.getNode(BLACK_BOX).y+this.getNode(BLACK_BOX).directionY*time,
 												0,
 												app.height-this.getNode(BLACK_BOX).height);
 
-			this.getNode(RED_BOX).y = clamp(this.getNode(RED_BOX).y+this.getNode(RED_BOX).direction*time,
+			this.getNode(RED_BOX).y = clamp(this.getNode(RED_BOX).y+this.getNode(RED_BOX).directionY*time,
 												0,
 												app.height-this.getNode(RED_BOX).height);
 
 			var ballSpeed = 0.3;
-			this.getNode(BALL).x+=this.getNode(BALL).direction*time*ballSpeed;
+			this.getNode(BALL).x+=this.getNode(BALL).directionX*time*ballSpeed;
 			
 			if(collision(RED_BOX,BALL) ||collision(BLACK_BOX,BALL)){
-				this.getNode(BALL).direction*=-1;
+				this.getNode(BALL).directionX*=-1;
 			}
 
 			if(this.getNode(BALL).x+this.getNode(BALL).width<0){
