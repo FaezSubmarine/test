@@ -12,6 +12,7 @@
 		app.height = window.innerHeight;
 		var player1score = 0;
 		var player2score = 0;
+		var ballSpeed = 0.3;
 		const BLACK_BOX = 'black-box';
 		const RED_BOX = 'red-box';
 		const BALL = 'ball';
@@ -37,12 +38,9 @@
 				var node = app.nodes[index];
 				if (node.id == 'ball') {
 					app.getNode(node.id).x = app.width/2 - app.getNode(node.id).width/2;
-
-					app.getNode(node.id).direction*=-1;
+					app.getNode(node.id).directionX = (app.getNode(node.id).directionX<0)?1:-1;
 				}
-				else {
-					app.getNode(node.id).direction = 0;
-				}
+				app.getNode(node.id).directionY = 0;
 				app.getNode(node.id).y = app.height / 2 - app.getNode(node.id).height / 2;
 			}
 
@@ -70,6 +68,7 @@
 				width  : PLAYER_WIDTH,
 				height : PLAYER_HEIGHT,
 				x  : 0,
+				y  : 0,
 				color  : 'red',
 				directionX: 0,
 				directionY:0
@@ -79,6 +78,7 @@
 				width  : PLAYER_WIDTH,
 				height : PLAYER_HEIGHT,
 				x: app.width-PLAYER_WIDTH,
+				y  : 0,
 				color  : 'black',
 				directionX: 0,
 				directionY:0
@@ -122,6 +122,22 @@
 			|| app.getNode(collB).y>app.getNode(collA).y+app.getNode(collA).height
 			|| app.getNode(collA).y>app.getNode(collB).y+app.getNode(collB).height);
 		}
+
+		function collisionResultFromBallVsPlayer(box){
+			let redBoxCenter = {x:app.getNode(box).x+app.getNode(box).width/2,
+					y:app.getNode(box).y+app.getNode(box).height/2};
+				
+				let ballCenter = {x:app.getNode(BALL).x+app.getNode(BALL).width/2,
+					y:app.getNode(BALL).y+app.getNode(BALL).height/2};
+				
+				let XDist = (redBoxCenter.x-ballCenter.x);
+				let YDist = (redBoxCenter.y-ballCenter.y);
+				let mag = Math.sqrt(Math.pow(redBoxCenter.x-ballCenter.x,2)+Math.pow(redBoxCenter.y-ballCenter.y,2));
+				if(mag != 0){
+					app.getNode(BALL).directionX = -XDist/mag;
+					app.getNode(BALL).directionY = -YDist/mag;
+				}
+		}
 		function clamp(curr, min, max){
 			return Math.min(Math.max(curr, min), max);
 		}
@@ -134,12 +150,21 @@
 												0,
 												app.height-this.getNode(RED_BOX).height);
 
-			var ballSpeed = 0.3;
-			this.getNode(BALL).x+=this.getNode(BALL).directionX*time*ballSpeed;
-			
-			if(collision(RED_BOX,BALL) ||collision(BLACK_BOX,BALL)){
-				this.getNode(BALL).directionX*=-1;
+			let totalBallSpeedY = this.getNode(BALL).directionY*time*ballSpeed;
+			if(Math.max(this.getNode(BALL).y+totalBallSpeedY,0) == 0 ||
+			Math.min(this.getNode(BALL).y+totalBallSpeedY,app.height-this.getNode(BALL).height) == app.height-this.getNode(BALL).height){
+				this.getNode(BALL).directionY*=-1;
 			}
+			this.getNode(BALL).x+=this.getNode(BALL).directionX*time*ballSpeed;
+			this.getNode(BALL).y+=this.getNode(BALL).directionY*time*ballSpeed;
+			if(collision(RED_BOX,BALL)){
+				collisionResultFromBallVsPlayer(RED_BOX);
+			}
+			
+			if(collision(BLACK_BOX,BALL)){
+				collisionResultFromBallVsPlayer(BLACK_BOX);
+			}
+
 
 			if(this.getNode(BALL).x+this.getNode(BALL).width<0){
 				this.getRenderText(PLAYER_SCORE).textString = ("player 1: "+(player1score) + " player 2: "+(++player2score));
