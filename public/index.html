@@ -12,98 +12,126 @@
 		app.height = window.innerHeight;
 		var player1score = 0;
 		var player2score = 0;
-		function redBoxInput(e){
-			if(e.key === 'w'){
-					app.getNode('red-box').direction = -1;
+		var ballSpeed = 0.3;
+		const BLACK_BOX = 'black-box';
+		const RED_BOX = 'red-box';
+		const BLACK_BLOCKER = 'black-blocker';
+		const RED_BLOCKER = 'red-blocker';
+		const BALL = 'ball';
+		const PLAYER_SCORE = 'player score';
+		function addEventListenersForObjects(objSubject, negativeKey, positiveKey) {
+			window.addEventListener('keydown', (e) => {
+				if (e.key === negativeKey) {
+					app.getNode(objSubject).directionY = -1;
 				}
-				if(e.key === 's'){
-					app.getNode('red-box').direction = 1;
+				if (e.key === positiveKey) {
+					app.getNode(objSubject).directionY = 1;
 				}
-		}
-		function noRedBoxInput(e){
-			if(e.key === 'w' || e.key === 's'){
-					app.getNode('red-box').direction = 0;
+			}, false);
+
+			window.addEventListener('keyup', (e) => {
+				if (e.key === negativeKey || e.key === positiveKey) {
+					app.getNode(objSubject).directionY = 0;
 				}
-		}
-		function blackBoxInput(e){
-			if (e.key === 'ArrowUp') {
-				app.getNode('black-box').direction = -1;
-			}
-			if (e.key === 'ArrowDown') {
-				app.getNode('black-box').direction = 1;
-			}
-		}
-		function noBlackBoxInput(e){
-			if(e.key === 'ArrowUp' || e.key === 'ArrowDown'){
-					app.getNode('black-box').direction = 0;
-				}
+			}, false);
 		}
 		app.reset = function(){
 			for (var index in app.nodes) {
 				var node = app.nodes[index];
-				if (node.id == 'ball') {
+				if(node.id == RED_BLOCKER || node.id == BLACK_BLOCKER) continue;
+				if (node.id == BALL) {
 					app.getNode(node.id).x = app.width/2 - app.getNode(node.id).width/2;
-
-					app.getNode(node.id).direction*=-1;
+					app.getNode(node.id).directionX = (app.getNode(node.id).directionX<0)?1:-1;
 				}
-				else {
-					app.getNode(node.id).direction = 0;
-				}
+				app.getNode(node.id).directionY = 0;
 				app.getNode(node.id).y = app.height / 2 - app.getNode(node.id).height / 2;
 			}
 
 		}
-		app.onInit = function(){
-
+		function browserWindowSetup(){
 			app.canvas.width = window.innerWidth;
 			app.canvas.height = window.innerHeight;
-
 			var body = document.getElementById('body');
 			document.body.clientWidth = '100%';
 			document.body.height = '100%';
 			document.body.margin = '0px';
 			document.body.style.overflowX = document.body.style.overflowY = 'hidden';
 			document.body.diplay = 'block';
-			this.nodes.push({
-				id : 'red-box',
-				width  : 50,
-				height : 100,
+		}
+
+		function initObjects(){
+			const PLAYER_WIDTH = 50;
+			const PLAYER_HEIGHT = 100;
+			const BALL_DIAMETER = 20;
+
+			const PLAYER_SCORE_X = 50;
+			const PLAYER_SCORE_Y = 50;
+			app.nodes.push({
+				id : RED_BOX,
+				width  : PLAYER_WIDTH,
+				height : PLAYER_HEIGHT,
 				x  : 0,
+				y  : 0,
 				color  : 'red',
-				direction : 0
+				directionX: 0,
+				directionY:0
 			});
-
-			this.nodes.push({
-				id : 'black-box',
-				width  : 50,
-				height : 100,
+			app.nodes.push({
+				id : BLACK_BOX,
+				width  : PLAYER_WIDTH,
+				height : PLAYER_HEIGHT,
+				x: app.width-PLAYER_WIDTH,
+				y  : 0,
 				color  : 'black',
-				direction : 0
+				directionX: 0,
+				directionY:0
 			});
-			this.getNode('black-box').x = this.width-this.getNode('black-box').width;
-			this.nodes.push({
-				id : 'ball',
-				width  : 20,
-				height : 20,
+			app.nodes.push({
+				id : BLACK_BLOCKER,
+				width  : PLAYER_WIDTH,
+				height : PLAYER_HEIGHT,
+				x: app.width/4,
+				y  : Math.floor(Math.random() * (app.height-PLAYER_HEIGHT)),
+				color  : 'olive',
+				directionX: 0,
+				directionY:0
+			});
+			app.nodes.push({
+				id : RED_BLOCKER,
+				width  : PLAYER_WIDTH,
+				height : PLAYER_HEIGHT,
+				x: (3*app.width)/4-PLAYER_WIDTH,
+				y  : Math.floor(Math.random() * (app.height-PLAYER_HEIGHT)),
+				color  : 'pink',
+				directionX: 0,
+				directionY:0
+			});
+			app.nodes.push({
+				id : BALL,
+				width  : BALL_DIAMETER,
+				height : BALL_DIAMETER,
 				color  : 'green',
-				direction : -1
-
+				directionX: -1,
+				directionY:0
 			});
-			app.reset();
-			this.renderTexts.push({
-				id: 'player score',
-				x: 50,
-				y:50,
+
+			app.renderTexts.push({
+				id: PLAYER_SCORE,
+				x: PLAYER_SCORE_X,
+				y: PLAYER_SCORE_Y,
 				font: '48px impact',
 				textString: 'player 1: 0 player 2: 0',
 				color: 'black'
 			});
-			window.addEventListener('keydown',redBoxInput,false);
-			window.addEventListener('keyup',noRedBoxInput,false);
+		}
+		app.onInit = function(){
+			browserWindowSetup();
+			initObjects();
 
-			window.addEventListener('keydown',blackBoxInput,false);
-			window.addEventListener('keyup',noBlackBoxInput,false);
+			app.reset();
 
+			addEventListenersForObjects(RED_BOX,'w','s');
+			addEventListenersForObjects(BLACK_BOX,'ArrowUp','ArrowDown');
 			window.addEventListener('keydown',(e)=>{
 				if(e.key === ' '){
 					app.pause();
@@ -117,31 +145,64 @@
 			|| app.getNode(collB).y>app.getNode(collA).y+app.getNode(collA).height
 			|| app.getNode(collA).y>app.getNode(collB).y+app.getNode(collB).height);
 		}
+
+		function blockerRespawner(blocker){
+			app.getNode(blocker).y = Math.floor(Math.random() * (app.height-app.getNode(blocker).height));
+		}
+		function collisonResultForBall(box){
+			let redBoxCenter = {x:app.getNode(box).x+app.getNode(box).width/2,
+					y:app.getNode(box).y+app.getNode(box).height/2};
+				
+				let ballCenter = {x:app.getNode(BALL).x+app.getNode(BALL).width/2,
+					y:app.getNode(BALL).y+app.getNode(BALL).height/2};
+				
+				let XDist = (redBoxCenter.x-ballCenter.x);
+				let YDist = (redBoxCenter.y-ballCenter.y);
+				let mag = Math.sqrt(Math.pow(redBoxCenter.x-ballCenter.x,2)+Math.pow(redBoxCenter.y-ballCenter.y,2));
+				if(mag != 0){
+					app.getNode(BALL).directionX = -XDist/mag;
+					app.getNode(BALL).directionY = -YDist/mag;
+				}
+		}
 		function clamp(curr, min, max){
 			return Math.min(Math.max(curr, min), max);
 		}
 		app.onUpdate = function(time){
-			this.getNode('black-box').y = clamp(this.getNode('black-box').y+this.getNode('black-box').direction*time,
+			this.getNode(BLACK_BOX).y = clamp(this.getNode(BLACK_BOX).y+this.getNode(BLACK_BOX).directionY*time,
 												0,
-												app.height-this.getNode('black-box').height);
+												app.height-this.getNode(BLACK_BOX).height);
 
-			this.getNode('red-box').y = clamp(this.getNode('red-box').y+this.getNode('red-box').direction*time,
+			this.getNode(RED_BOX).y = clamp(this.getNode(RED_BOX).y+this.getNode(RED_BOX).directionY*time,
 												0,
-												app.height-this.getNode('red-box').height);
+												app.height-this.getNode(RED_BOX).height);
 
-			var ballSpeed = 0.3;
-			this.getNode('ball').x+=this.getNode('ball').direction*time*ballSpeed;
-			
-			if(collision('red-box','ball') ||collision('black-box','ball')){
-				this.getNode('ball').direction*=-1;
+			let totalBallSpeedY = this.getNode(BALL).directionY*time*ballSpeed;
+			if(Math.max(this.getNode(BALL).y+totalBallSpeedY,0) == 0 ||
+			Math.min(this.getNode(BALL).y+totalBallSpeedY,app.height-this.getNode(BALL).height) == app.height-this.getNode(BALL).height){
+				this.getNode(BALL).directionY*=-1;
+			}
+			this.getNode(BALL).x+=this.getNode(BALL).directionX*time*ballSpeed;
+			this.getNode(BALL).y+=this.getNode(BALL).directionY*time*ballSpeed;
+
+			for(var i in this.nodes){
+				var node = this.nodes[i];
+
+				if(node.id == BALL) continue;
+
+				if(collision(BALL,node.id)){
+					collisonResultForBall(node.id);
+					if(node.id == RED_BLOCKER || node.id == BLACK_BLOCKER){
+						blockerRespawner(node.id);
+					}
+				}
 			}
 
-			if(this.getNode('ball').x+this.getNode('ball').width<0){
-				this.getRenderText('player score').textString = ("player 1: "+(player1score) + " player 2: "+(++player2score));
+			if(this.getNode(BALL).x+this.getNode(BALL).width<0){
+				this.getRenderText(PLAYER_SCORE).textString = ("player 1: "+(player1score) + " player 2: "+(++player2score));
 				app.reset();
 			}
-			else if(this.getNode('ball').x>this.width){
-				this.getRenderText('player score').textString =("player 1: "+(++player1score) + " player 2: "+(player2score));
+			else if(this.getNode(BALL).x>this.width){
+				this.getRenderText(PLAYER_SCORE).textString =("player 1: "+(++player1score) + " player 2: "+(player2score));
 				app.reset();
 			}
 		};
