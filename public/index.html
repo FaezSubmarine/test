@@ -146,7 +146,9 @@
 			|| app.getNode(collA).y>app.getNode(collB).y+app.getNode(collB).height);
 		}
 
-		function collisionResultFromBallVsPlayer(box){
+		function blockerRespawner(blocker){
+			app.getNode(blocker).y = Math.floor(Math.random() * (app.height-app.getNode(blocker).height));
+		}
 		function collisonResultForBall(box){
 			let redBoxCenter = {x:app.getNode(box).x+app.getNode(box).width/2,
 					y:app.getNode(box).y+app.getNode(box).height/2};
@@ -181,14 +183,19 @@
 			}
 			this.getNode(BALL).x+=this.getNode(BALL).directionX*time*ballSpeed;
 			this.getNode(BALL).y+=this.getNode(BALL).directionY*time*ballSpeed;
-			if(collision(RED_BOX,BALL)){
-				collisionResultFromBallVsPlayer(RED_BOX);
-			}
-			
-			if(collision(BLACK_BOX,BALL)){
-				collisionResultFromBallVsPlayer(BLACK_BOX);
-			}
 
+			for(var i in this.nodes){
+				var node = this.nodes[i];
+
+				if(node.id == BALL) continue;
+
+				if(collision(BALL,node.id)){
+					collisonResultForBall(node.id);
+					if(node.id == RED_BLOCKER || node.id == BLACK_BLOCKER){
+						blockerRespawner(node.id);
+					}
+				}
+			}
 
 			if(this.getNode(BALL).x+this.getNode(BALL).width<0){
 				this.getRenderText(PLAYER_SCORE).textString = ("player 1: "+(player1score) + " player 2: "+(++player2score));
