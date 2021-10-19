@@ -15,6 +15,8 @@
 		var ballSpeed = 0.3;
 		const BLACK_BOX = 'black-box';
 		const RED_BOX = 'red-box';
+		const BLACK_BLOCKER = 'black-blocker';
+		const RED_BLOCKER = 'red-blocker';
 		const BALL = 'ball';
 		const PLAYER_SCORE = 'player score';
 		function addEventListenersForObjects(objSubject, negativeKey, positiveKey) {
@@ -36,7 +38,8 @@
 		app.reset = function(){
 			for (var index in app.nodes) {
 				var node = app.nodes[index];
-				if (node.id == 'ball') {
+				if(node.id == RED_BLOCKER || node.id == BLACK_BLOCKER) continue;
+				if (node.id == BALL) {
 					app.getNode(node.id).x = app.width/2 - app.getNode(node.id).width/2;
 					app.getNode(node.id).directionX = (app.getNode(node.id).directionX<0)?1:-1;
 				}
@@ -83,7 +86,26 @@
 				directionX: 0,
 				directionY:0
 			});
-
+			app.nodes.push({
+				id : BLACK_BLOCKER,
+				width  : PLAYER_WIDTH,
+				height : PLAYER_HEIGHT,
+				x: app.width/4,
+				y  : Math.floor(Math.random() * (app.height-PLAYER_HEIGHT)),
+				color  : 'olive',
+				directionX: 0,
+				directionY:0
+			});
+			app.nodes.push({
+				id : RED_BLOCKER,
+				width  : PLAYER_WIDTH,
+				height : PLAYER_HEIGHT,
+				x: (3*app.width)/4-PLAYER_WIDTH,
+				y  : Math.floor(Math.random() * (app.height-PLAYER_HEIGHT)),
+				color  : 'pink',
+				directionX: 0,
+				directionY:0
+			});
 			app.nodes.push({
 				id : BALL,
 				width  : BALL_DIAMETER,
@@ -92,6 +114,7 @@
 				directionX: -1,
 				directionY:0
 			});
+
 			app.renderTexts.push({
 				id: PLAYER_SCORE,
 				x: PLAYER_SCORE_X,
@@ -124,6 +147,7 @@
 		}
 
 		function collisionResultFromBallVsPlayer(box){
+		function collisonResultForBall(box){
 			let redBoxCenter = {x:app.getNode(box).x+app.getNode(box).width/2,
 					y:app.getNode(box).y+app.getNode(box).height/2};
 				
